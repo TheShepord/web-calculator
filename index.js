@@ -18,7 +18,12 @@ class UserInput {
     this.len = 0;
   }
 
-  push(char) {
+  updateDisplay() {
+    document.getElementById("display").innerHTML = this.input.join("");
+    console.log(this.input);
+  }
+
+  add(char) {
     let input = this.input;
     let len = this.len;
 
@@ -30,7 +35,15 @@ class UserInput {
       this.len++;
     }
 
-    document.getElementById("display").innerHTML = input.join("")
+    this.updateDisplay();
+  }
+
+  write(str) {
+    for (let i = 0; i < str.length; i++) {
+      this.add(str[i]);
+    }
+
+    this.updateDisplay();
   }
 
   parse() {
@@ -55,6 +68,8 @@ class UserInput {
       res = operate(res, input[i+1], input[i]);
     }
     document.getElementById("display").innerHTML = parseFloat(res.toFixed(5));
+
+    return parseFloat(res.toFixed(5));
   }
 }
 
@@ -81,11 +96,15 @@ const operate = (n1, n2, op) => {
 
 const parser = (input) => {
   try {
-    input.parse();
+    res = input.parse();
+    input.clear();
+    input.write(res.toString(10));
   }
   catch (err) {
     if (err === "invalid input") {
       console.log("invalid input");
+      input.clear();
+      input.write("ERR");
     }
     else {
       input.clear();
@@ -93,7 +112,6 @@ const parser = (input) => {
     }
 
   }
-  input.clear();
 }
 
 const clearDisplay = (input) => {
@@ -116,7 +134,7 @@ const main = () => {
       buttons[i].addEventListener("click", () => {clearDisplay(input)});
     }
     else {
-      buttons[i].addEventListener("click", () => {input.push(buttons[i].innerHTML)});
+      buttons[i].addEventListener("click", () => {input.add(buttons[i].innerHTML)});
     }
   }
   // for (i = 0; i < buttons.length; i++) {
@@ -137,5 +155,4 @@ const main = () => {
   //   document.getElementById("buttons").appendChild(btn);
   // }
 }
-
 main();
