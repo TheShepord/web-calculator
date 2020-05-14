@@ -11,6 +11,11 @@ class UserInput {
   constructor() {
     this.input = [];
     this.len = 0;
+
+    this.ops = "+-*/"
+    this.err = false;
+    this.res = false;
+
   }
 
   clear() {
@@ -24,9 +29,16 @@ class UserInput {
   }
 
   add(char) {
+    if (this.res) {
+      this.switchRes();
+
+      if (! this.ops.includes(char)) {
+      this.clear();
+      }
+    }
+
     let input = this.input;
     let len = this.len;
-
     if (isInt(char) && isInt(input[len-1])) {
       this.input[len-1] = [input[len-1],char].join("");
     }
@@ -71,6 +83,14 @@ class UserInput {
 
     return parseFloat(res.toFixed(5));
   }
+
+  switchErr() {
+    this.err = ! this.err;
+  }
+
+  switchRes() {
+    this.res = ! this.res;
+  }
 }
 
 const operate = (n1, n2, op) => {
@@ -99,12 +119,14 @@ const parser = (input) => {
     res = input.parse();
     input.clear();
     input.write(res.toString(10));
+    input.switchRes();
   }
   catch (err) {
     if (err === "invalid input") {
       console.log("invalid input");
       input.clear();
       input.write("ERR");
+      input.switchErr();
     }
     else {
       input.clear();
