@@ -14,7 +14,8 @@ class UserInput {
 
     this.ops = "+-*/"
     this.err = false;
-    this.res = false;
+    this.res = true;
+    this.neg = false;
 
   }
 
@@ -33,16 +34,42 @@ class UserInput {
       this.switchRes();
 
       if (! this.ops.includes(char)) {
-      this.clear();
+        this.clear();
       }
+      else {
+        this.input.push(document.getElementById("display").innerHTML);
+        this.len++;
+      }
+    }
+
+    else if (this.err) {
+      this.switchErr();
+      this.clear();
     }
 
     let input = this.input;
     let len = this.len;
-    if (isInt(char) && isInt(input[len-1])) {
+
+    if (len === 0) {
+      if (char != "0") {
+        this.input.push(char);
+        this.len++;
+      }
+      else {
+        document.getElementById("display").innerHTML = "0";
+        return 0;
+      }
+
+      if (char === '-') {
+        this.neg = true;
+      }
+    }
+    else if ((isInt(char) && isInt(input[len-1])) || this.neg ) {
       this.input[len-1] = [input[len-1],char].join("");
+      this.neg = false;
     }
     else {
+      // check whether negative number
       this.input.push(char);
       this.len++;
     }
@@ -54,8 +81,6 @@ class UserInput {
     for (let i = 0; i < str.length; i++) {
       this.add(str[i]);
     }
-
-    this.updateDisplay();
   }
 
   parse() {
@@ -69,8 +94,8 @@ class UserInput {
         if (! isInt(input[0])) {
           throw "invalid input";
         }
-        console.log(parseInt(input[0]));
-        return;
+        let res = input[0];
+        return Number(res);
       case 2:
         throw "invalid input";
     }
@@ -78,10 +103,11 @@ class UserInput {
     let res = input[0];
     for (let i = 1; i < len; i += 2) {
       res = operate(res, input[i+1], input[i]);
-    }
-    document.getElementById("display").innerHTML = parseFloat(res.toFixed(5));
 
-    return parseFloat(res.toFixed(5));
+    }
+    document.getElementById("display").innerHTML = Number(res.toFixed(5));
+
+    return Number(res.toFixed(5));
   }
 
   switchErr() {
@@ -90,6 +116,10 @@ class UserInput {
 
   switchRes() {
     this.res = ! this.res;
+  }
+
+  getDisplay() {
+    return this.input;
   }
 }
 
@@ -114,19 +144,30 @@ const operate = (n1, n2, op) => {
   }
 }
 
+const clearDisplay = (input, def) => {
+  input.clear();
+  input.write(def);
+  document.getElementById("display").innerHTML = def;
+  input.clear();
+}
+
 const parser = (input) => {
   try {
     res = input.parse();
+    console.log(res);
     input.clear();
     input.write(res.toString(10));
+    input.clear();
     input.switchRes();
   }
   catch (err) {
     if (err === "invalid input") {
-      console.log("invalid input");
+      res = input.getDisplay();
       input.clear();
       input.write("ERR");
       input.switchErr();
+      window.setTimeout(clearDisplay, 300, input, res.join(""));
+
     }
     else {
       input.clear();
@@ -134,11 +175,6 @@ const parser = (input) => {
     }
 
   }
-}
-
-const clearDisplay = (input) => {
-  input.clear();
-  document.getElementById("display").innerHTML = "0";
 }
 
 const main = () => {
@@ -153,7 +189,7 @@ const main = () => {
       buttons[i].addEventListener("click", () => {parser(input)});
     }
     else if (buttons[i].id === 'C') {
-      buttons[i].addEventListener("click", () => {clearDisplay(input)});
+      buttons[i].addEventListener("click", () => {clearDisplay(input, "0")});
     }
     else {
       buttons[i].addEventListener("click", () => {input.add(buttons[i].innerHTML)});
