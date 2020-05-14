@@ -1,9 +1,9 @@
 const isInt = (char) => {
   if (isNaN(parseInt(char))) {
-    return 0;
+    return false;
   }
   else {
-    return 1;
+    return true;
   }
 }
 
@@ -19,32 +19,42 @@ class UserInput {
   }
 
   push(char) {
-    this.input.push(char);
-    this.len++;
+    let input = this.input;
+    let len = this.len;
+
+    if (isInt(char) && isInt(input[len-1])) {
+      this.input[len-1] = [input[len-1],char].join("");
+    }
+    else {
+      this.input.push(char);
+      this.len++;
+    }
+
+    document.getElementById("display").innerHTML = input.join("")
   }
 
   parse() {
-    for (i = 0; i < this.len; i++) {
+    let input = this.input;
+    let len = this.len;
 
-    }
-    switch(this.len) {
+    switch(len) {
       case 0:
         return;
       case 1:
-        if (! isInt(this.input[0])) {
-          throw "Invalid input";
+        if (! isInt(input[0])) {
+          throw "invalid input";
         }
-        console.log(parseInt(this.input[0]));
+        console.log(parseInt(input[0]));
         return;
       case 2:
-        throw "Invalid input";
+        throw "invalid input";
     }
 
-    let res = this.input[0];
-    for (i = 1; i < this.len; i += 2) {
-      res = operate(res, this.input[i+1], this.input[i]);
+    let res = input[0];
+    for (let i = 1; i < len; i += 2) {
+      res = operate(res, input[i+1], input[i]);
     }
-    console.log(res);
+    document.getElementById("display").innerHTML = parseFloat(res.toFixed(5));
   }
 }
 
@@ -53,7 +63,7 @@ const operate = (n1, n2, op) => {
   b = parseInt(n2);
 
   if (isNaN(a) || isNaN(b)) {
-    throw "Invalid input";
+    throw "invalid input";
   }
   switch(op) {
     case '+':
@@ -65,7 +75,7 @@ const operate = (n1, n2, op) => {
     case '/':
       return a / b;
     default:
-      throw "Invalid operator";
+      throw "invalid input";
   }
 }
 
@@ -73,35 +83,59 @@ const parser = (input) => {
   try {
     input.parse();
   }
-  catch {
-    console.log("invalid input");
+  catch (err) {
+    if (err === "invalid input") {
+      console.log("invalid input");
+    }
+    else {
+      input.clear();
+      throw(err);
+    }
+
   }
   input.clear();
 }
 
+const clearDisplay = (input) => {
+  input.clear();
+  document.getElementById("display").innerHTML = "0";
+}
 
 const main = () => {
-  const buttons = "1234567890=+-*/C";
+  // const buttons = "1234567890=+-*/C";
 
   input = new UserInput();
 
-  for (i = 0; i < buttons.length; i++) {
-    let btn = document.createElement('button');
-    btn.innerHTML = buttons[i];
-    btn.id = buttons[i];
-    btn.type = 'button';
-    if (buttons[i] === '=') {
-      btn.addEventListener("click", () => {parser(input)});
+  const buttons = document.getElementById("buttons").children
+
+  for (let i = 0; i < buttons.length; i++) {
+    if (buttons[i].id === '=') {
+      buttons[i].addEventListener("click", () => {parser(input)});
     }
-    else if (buttons[i] === 'C') {
-      btn.addEventListener("click", () => {input.clear()});
+    else if (buttons[i].id === 'C') {
+      buttons[i].addEventListener("click", () => {clearDisplay(input)});
     }
     else {
-      btn.addEventListener("click", () => {input.push(btn.innerHTML)});
+      buttons[i].addEventListener("click", () => {input.push(buttons[i].innerHTML)});
     }
-
-    document.getElementById("buttons").appendChild(btn);
   }
+  // for (i = 0; i < buttons.length; i++) {
+  //   let btn = document.createElement('button');
+  //   btn.innerHTML = buttons[i];
+  //   btn.id = buttons[i];
+  //   btn.type = 'button';
+    // if (buttons[i] === '=') {
+    //   btn.addEventListener("click", () => {parser(input)});
+    // }
+    // else if (buttons[i] === 'C') {
+    //   btn.addEventListener("click", () => {input.clear()});
+    // }
+    // else {
+    //   btn.addEventListener("click", () => {input.push(btn.innerHTML)});
+    // }
+  //
+  //   document.getElementById("buttons").appendChild(btn);
+  // }
 }
 
 main();

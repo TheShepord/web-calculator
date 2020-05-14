@@ -1,0 +1,46 @@
+body {
+  margin: 20vh 1rem 20vh 1rem;
+  /* justify-content: center; */
+  text-align: center;
+}
+
+#buttons {
+  /* width: 50%; */
+  background-color: darkslategray;
+  height: 100%;
+  display: inline-grid;
+  border-radius: 20px;
+  padding: 40px 25px 15px 25px;
+  justify-content: center;
+  align-self: center;
+
+  grid-gap: 0.5rem;
+  grid-template-columns: 40px 40px 40px 40px;
+  grid-template-rows: 40px 40px 40px 40px 40px;
+  grid-template-areas:
+    "header header header header"
+    ". . . ."
+    ". . . ."
+    ". . . ."
+    ". . . .";
+}
+
+#display {
+  grid-area: header;
+  background-color: darkseagreen;
+  /* padding: 10px; */
+  font-size: 30px;
+  font-family: consolas;
+  text-align: left;
+  align-self: center;
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-bottom: 5px;
+  margin-bottom: 50px;
+  border-radius: 5px;
+}
+button {
+  font-size: 24px;
+  font-family: consolas;
+  border-radius: 3px;
+}
