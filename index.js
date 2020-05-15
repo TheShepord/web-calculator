@@ -157,7 +157,6 @@ const clearDisplay = (input, def) => {
 const parser = (input) => {
   try {
     res = input.parse();
-    console.log(res);
     input.clear();
     input.write(res.toString(10));
     input.clear();
