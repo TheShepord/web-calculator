@@ -15,7 +15,7 @@ class UserInput {
 
     this.ops = "+-*/" // operations
     this.err = false; // error flag, true when inputted sequence is invalid
-    this.res = true; // result flag. Begins diplaying 0 as result, so initially true
+    this.res = true; // result flag. Begins diplaying 0, so initially true
     this.neg = false; // starting negative sign flag
 
   }
@@ -185,11 +185,9 @@ const parser = (input) => {
 }
 
 const main = () => {
-  // buttons = "1234567890=+-*/C";
-
   let input = new UserInput();
 
-  const buttons = document.getElementById("buttons").children
+  const buttons = document.getElementById("calculator").children
 
   for (let i = 1; i < buttons.length; i++) {
     if (buttons[i].id === '=') {
@@ -205,7 +203,3 @@ const main = () => {
 }
 
 main();
-
-window.setInterval(() => {
-
-}, 2000);

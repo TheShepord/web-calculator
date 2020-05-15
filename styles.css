@@ -4,7 +4,7 @@ body {
   text-align: center;
 }
 
-#buttons {
+#calculator {
   /* width: 50%; */
   background-color: darkslategray;
   height: 100%;
@@ -28,7 +28,6 @@ body {
 #display {
   grid-area: header;
   background-color: darkseagreen;
-  /* padding: 10px; */
   font-size: 30px;
   font-family: consolas;
   text-align: left;
