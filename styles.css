@@ -32,10 +32,11 @@ body {
   font-size: 30px;
   font-family: consolas;
   text-align: left;
+  white-space: nowrap;
   align-self: center;
-  padding-top: 5px;
-  padding-left: 10px;
-  padding-bottom: 5px;
+  overflow-x: auto;
+  scroll-behavior: auto;
+  padding: 5px 10px 5px 10px;
   margin-bottom: 50px;
   border-radius: 5px;
 }

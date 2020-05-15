@@ -1,4 +1,5 @@
 const isInt = (char) => {
+  // determines whether given char/str a number
   if (isNaN(parseInt(char))) {
     return false;
   }
@@ -9,29 +10,33 @@ const isInt = (char) => {
 
 class UserInput {
   constructor() {
-    this.input = [];
+    this.input = []; // maintains the display
     this.len = 0;
 
-    this.ops = "+-*/"
-    this.err = false;
-    this.res = true;
-    this.neg = false;
+    this.ops = "+-*/" // operations
+    this.err = false; // error flag, true when inputted sequence is invalid
+    this.res = true; // result flag. Begins diplaying 0 as result, so initially true
+    this.neg = false; // starting negative sign flag
 
   }
 
   clear() {
+    // clears input, but doesn't change display
     this.input = [];
     this.len = 0;
   }
 
-  updateDisplay() {
-    document.getElementById("display").innerHTML = this.input.join("");
-    console.log(this.input);
+  updateDisplay(str) {
+    // updates display with str
+    let display =  document.getElementById("display");
+    display.innerHTML = str;
+    display.scrollLeft = display.scrollWidth;
   }
 
   add(char) {
+    // pushes char onto display
     if (this.res) {
-      this.switchRes();
+      this.flipRes();
 
       if (! this.ops.includes(char)) {
         this.clear();
@@ -42,8 +47,8 @@ class UserInput {
       }
     }
 
-    else if (this.err) {
-      this.switchErr();
+    if (this.err) {
+      this.flipErr();
       this.clear();
     }
 
@@ -74,7 +79,7 @@ class UserInput {
       this.len++;
     }
 
-    this.updateDisplay();
+    this.updateDisplay(this.input.join(""));
   }
 
   write(str) {
@@ -110,11 +115,11 @@ class UserInput {
     return Number(res.toFixed(5));
   }
 
-  switchErr() {
+  flipErr() {
     this.err = ! this.err;
   }
 
-  switchRes() {
+  flipRes() {
     this.res = ! this.res;
   }
 
@@ -146,9 +151,7 @@ const operate = (n1, n2, op) => {
 
 const clearDisplay = (input, def) => {
   input.clear();
-  input.write(def);
-  document.getElementById("display").innerHTML = def;
-  input.clear();
+  input.updateDisplay("0");
 }
 
 const parser = (input) => {
@@ -158,19 +161,23 @@ const parser = (input) => {
     input.clear();
     input.write(res.toString(10));
     input.clear();
-    input.switchRes();
+    input.flipRes();
   }
   catch (err) {
     if (err === "invalid input") {
       res = input.getDisplay();
       input.clear();
       input.write("ERR");
-      input.switchErr();
-      window.setTimeout(clearDisplay, 300, input, res.join(""));
+      input.flipErr();
+      window.setTimeout(function(input, res) {
+        input.updateDisplay(res.join(""));
+        input.write(res.join(""));
+      }, 300, input, res);
+
 
     }
     else {
-      input.clear();
+      clearDisplay(input, "0");
       throw(err);
     }
 
@@ -178,13 +185,13 @@ const parser = (input) => {
 }
 
 const main = () => {
-  // const buttons = "1234567890=+-*/C";
+  // buttons = "1234567890=+-*/C";
 
-  input = new UserInput();
+  let input = new UserInput();
 
   const buttons = document.getElementById("buttons").children
 
-  for (let i = 0; i < buttons.length; i++) {
+  for (let i = 1; i < buttons.length; i++) {
     if (buttons[i].id === '=') {
       buttons[i].addEventListener("click", () => {parser(input)});
     }
@@ -195,22 +202,10 @@ const main = () => {
       buttons[i].addEventListener("click", () => {input.add(buttons[i].innerHTML)});
     }
   }
-  // for (i = 0; i < buttons.length; i++) {
-  //   let btn = document.createElement('button');
-  //   btn.innerHTML = buttons[i];
-  //   btn.id = buttons[i];
-  //   btn.type = 'button';
-    // if (buttons[i] === '=') {
-    //   btn.addEventListener("click", () => {parser(input)});
-    // }
-    // else if (buttons[i] === 'C') {
-    //   btn.addEventListener("click", () => {input.clear()});
-    // }
-    // else {
-    //   btn.addEventListener("click", () => {input.push(btn.innerHTML)});
-    // }
-  //
-  //   document.getElementById("buttons").appendChild(btn);
-  // }
 }
+
 main();
+
+window.setInterval(() => {
+
+}, 2000);
