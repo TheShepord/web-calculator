@@ -1,11 +1,9 @@
 body {
   margin: 20vh 1rem 20vh 1rem;
-  /* justify-content: center; */
   text-align: center;
 }
 
 #calculator {
-  /* width: 50%; */
   background-color: darkslategray;
   height: 100%;
   display: inline-grid;
@@ -15,14 +13,14 @@ body {
   align-self: center;
 
   grid-gap: 0.5rem;
-  grid-template-columns: 40px 40px 40px 40px;
-  grid-template-rows: 40px 40px 40px 40px 40px;
+  grid-template-columns: 40px 40px 40px 40px 40px;
+  grid-template-rows: 40px 40px 40px 40px 40px 40px;
   grid-template-areas:
-    "header header header header"
-    ". . . ."
-    ". . . ."
-    ". . . ."
-    ". . . .";
+    "header header header header header"
+    ". . . . ."
+    ". . . . ."
+    "eq . . . ."
+    "eq . . . .";
 }
 
 #display {
@@ -43,4 +41,8 @@ button {
   font-size: 24px;
   font-family: consolas;
   border-radius: 3px;
+}
+
+#eq {
+  grid-area: eq;
 }

@@ -1,5 +1,5 @@
 const isInt = (char) => {
-  // determines whether given char/str a number
+  // determines whether given char/str is a number
   if (isNaN(parseInt(char))) {
     return false;
   }
@@ -13,7 +13,7 @@ class UserInput {
     this.input = []; // maintains the display
     this.len = 0;
 
-    this.ops = "+-*/" // operations
+    this.ops = "+-*/%" // operations
     this.err = false; // error flag, true when inputted sequence is invalid
     this.res = true; // result flag. Begins diplaying 0, so initially true
     this.neg = false; // starting negative sign flag
@@ -31,6 +31,9 @@ class UserInput {
     let display =  document.getElementById("display");
     display.innerHTML = str;
     display.scrollLeft = display.scrollWidth;
+
+
+    // IF WOULD BE EMPTY, FILL WITH "0" INSTEAD!!!
   }
 
   add(char) {
@@ -74,7 +77,6 @@ class UserInput {
       this.neg = false;
     }
     else {
-      // check whether negative number
       this.input.push(char);
       this.len++;
     }
@@ -82,13 +84,45 @@ class UserInput {
     this.updateDisplay(this.input.join(""));
   }
 
+  del() {
+    let len = this.len
+    let input = this.input
+
+    if (len > 0) {
+      if (input[len-1].length > 1) {
+        this.input[len-1] = input[len-1].slice(0,-1);
+
+        this.updateDisplay(this.input.join(""));
+      }
+      else {
+        this.input.pop();
+        this.len--;
+
+        if (this.len != 0) {
+          this.updateDisplay(this.input.join(""));
+        }
+        else {
+          this.clear();
+          this.updateDisplay("0");
+        }
+      }
+    }
+
+    else {
+      this.clear();
+      this.updateDisplay("0");
+    }
+  }
+
   write(str) {
+    // like add, but for entire strings of characters
     for (let i = 0; i < str.length; i++) {
       this.add(str[i]);
     }
   }
 
   parse() {
+    // parses input up to this point, displaying result
     let input = this.input;
     let len = this.len;
 
@@ -116,19 +150,23 @@ class UserInput {
   }
 
   flipErr() {
+    // err setter
     this.err = ! this.err;
   }
 
   flipRes() {
+    // res setter
     this.res = ! this.res;
   }
 
   getDisplay() {
+    // input getter
     return this.input;
   }
 }
 
 const operate = (n1, n2, op) => {
+  // performs given operation on n1 and n2
   a = parseInt(n1);
   b = parseInt(n2);
 
@@ -144,14 +182,17 @@ const operate = (n1, n2, op) => {
       return a * b;
     case '/':
       return a / b;
+    case '%':
+      return a % b;
     default:
       throw "invalid input";
   }
 }
 
 const clearDisplay = (input, def) => {
+  // clears display, displaying the given def until the next user input
   input.clear();
-  input.updateDisplay("0");
+  input.updateDisplay(def);
 }
 
 const parser = (input) => {
@@ -189,14 +230,18 @@ const main = () => {
   const buttons = document.getElementById("calculator").children
 
   for (let i = 1; i < buttons.length; i++) {
-    if (buttons[i].id === '=') {
-      buttons[i].addEventListener("click", () => {parser(input)});
-    }
-    else if (buttons[i].id === 'C') {
-      buttons[i].addEventListener("click", () => {clearDisplay(input, "0")});
-    }
-    else {
-      buttons[i].addEventListener("click", () => {input.add(buttons[i].innerHTML)});
+    switch (buttons[i].id) {
+      case 'eq':
+        buttons[i].addEventListener("click", () => {parser(input)});
+        break;
+      case 'CE':
+        buttons[i].addEventListener("click", () => {clearDisplay(input, "0")});
+        break;
+      case 'C':
+        buttons[i].addEventListener("click", () => {input.del()});
+        break;
+      default:
+        buttons[i].addEventListener("click", () => {input.add(buttons[i].innerHTML)});
     }
   }
 }
