@@ -14,7 +14,6 @@ class UserInput {
     this.len = 0;
 
     this.ops = "+-*/%" // operations
-    this.err = false; // error flag, true when inputted sequence is invalid
     this.res = true; // result flag. Begins diplaying 0, so initially true
     this.neg = false; // starting negative sign flag
 
@@ -49,27 +48,11 @@ class UserInput {
       }
     }
 
-    if (this.err) {
-      this.flipErr();
-      this.clear();
-    }
-
     let input = this.input;
     let len = this.len;
 
-    if (len === 0) {
-      if (char != "0") {
-        this.input.push(char);
-        this.len++;
-      }
-      else {
-        document.getElementById("display").innerHTML = "0";
-        return 0;
-      }
-
-      if (char === '-') {
-        this.neg = true;
-      }
+    if (len === 0 && char === "-") {
+      this.neg = true;
     }
     else if ((isInt(char) && isInt(input[len-1])) || this.neg ) {
       this.input[len-1] = [input[len-1],char].join("");
@@ -140,11 +123,6 @@ class UserInput {
     return Number(res.toFixed(5));
   }
 
-  flipErr() {
-    // err setter
-    this.err = ! this.err;
-  }
-
   flipRes() {
     // res setter
     this.res = ! this.res;
@@ -181,7 +159,7 @@ const operate = (n1, n2, op) => {
 }
 
 const clearDisplay = (input) => {
-  // clears display, displaying the given def until the next user input
+  // clears display
   input.clear();
   input.updateDisplay();
 }
@@ -196,15 +174,10 @@ const parser = (input) => {
   }
   catch (err) {
     if (err === "invalid input") {
-      res = input.getDisplay();
-      input.clear();
-      input.write("ERR");
-      input.flipErr();
-      window.setTimeout(function(input, res) {
+      document.getElementById("display").innerHTML = "ERR";
+      window.setTimeout(function(input) {
         input.updateDisplay();
-        input.write(res.join(""));
-      }, 300, input, res);
-
+      }, 300, input);
 
     }
     else {
