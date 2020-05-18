@@ -8,13 +8,13 @@ body {
   height: 100%;
   display: inline-grid;
   border-radius: 20px;
-  padding: 40px 25px 15px 25px;
+  padding: 40px 15px 25px 15px;
   justify-content: center;
   align-self: center;
 
   grid-gap: 0.5rem;
   grid-template-columns: 40px 40px 40px 40px 40px;
-  grid-template-rows: 40px 40px 40px 40px 40px 40px;
+  grid-template-rows: 40px 40px 40px 40px 40px;
   grid-template-areas:
     "header header header header header"
     ". . . . ."
@@ -36,6 +36,7 @@ body {
   padding: 5px 10px 5px 10px;
   margin-bottom: 50px;
   border-radius: 5px;
+  box-shadow: inset 1px 1px 1px 1px #000;
 }
 button {
   font-size: 24px;
@@ -43,6 +44,18 @@ button {
   border-radius: 3px;
 }
 
+.operator {
+  background-color: silver;
+}
+
+#C {
+  background-color: lightcoral;
+}
+
+#CE {
+  background-color: lightcoral;
+}
 #eq {
   grid-area: eq;
+  background-color: skyblue;
 }
