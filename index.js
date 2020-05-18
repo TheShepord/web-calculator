@@ -1,6 +1,6 @@
 const isInt = (char) => {
   // determines whether given char/str is a number
-  if (isNaN(parseInt(char))) {
+  if (isNaN(parseFloat(char)) && char != ".") {
     return false;
   }
   else {
@@ -26,12 +26,11 @@ class UserInput {
     this.len = 0;
   }
 
-  updateDisplay(str) {
+  updateDisplay() {
     // updates display with str
     let display =  document.getElementById("display");
-    display.innerHTML = str;
+    display.innerHTML = this.input.length != 0 ? this.input.join("") : 0;
     display.scrollLeft = display.scrollWidth;
-
 
     // IF WOULD BE EMPTY, FILL WITH "0" INSTEAD!!!
   }
@@ -81,7 +80,7 @@ class UserInput {
       this.len++;
     }
 
-    this.updateDisplay(this.input.join(""));
+    this.updateDisplay();
   }
 
   del() {
@@ -92,26 +91,14 @@ class UserInput {
       if (input[len-1].length > 1) {
         this.input[len-1] = input[len-1].slice(0,-1);
 
-        this.updateDisplay(this.input.join(""));
       }
       else {
         this.input.pop();
         this.len--;
-
-        if (this.len != 0) {
-          this.updateDisplay(this.input.join(""));
-        }
-        else {
-          this.clear();
-          this.updateDisplay("0");
-        }
       }
     }
 
-    else {
-      this.clear();
-      this.updateDisplay("0");
-    }
+    this.updateDisplay();
   }
 
   write(str) {
@@ -126,11 +113,15 @@ class UserInput {
     let input = this.input;
     let len = this.len;
 
+    if (this.res) {
+      return(Number(document.getElementById("display").innerHTML));
+    }
+
     switch(len) {
       case 0:
         return;
       case 1:
-        if (! isInt(input[0])) {
+        if (! isInt(input[0]) || input[0].split(".").length > 2) {
           throw "invalid input";
         }
         let res = input[0];
@@ -167,10 +158,10 @@ class UserInput {
 
 const operate = (n1, n2, op) => {
   // performs given operation on n1 and n2
-  a = parseInt(n1);
-  b = parseInt(n2);
+  a = parseFloat(n1);
+  b = parseFloat(n2);
 
-  if (isNaN(a) || isNaN(b)) {
+  if (isNaN(a) || isNaN(b) || n1.split(".").length > 2 || n2.split(".").length > 2) {
     throw "invalid input";
   }
   switch(op) {
@@ -189,10 +180,10 @@ const operate = (n1, n2, op) => {
   }
 }
 
-const clearDisplay = (input, def) => {
+const clearDisplay = (input) => {
   // clears display, displaying the given def until the next user input
   input.clear();
-  input.updateDisplay(def);
+  input.updateDisplay();
 }
 
 const parser = (input) => {
@@ -210,14 +201,14 @@ const parser = (input) => {
       input.write("ERR");
       input.flipErr();
       window.setTimeout(function(input, res) {
-        input.updateDisplay(res.join(""));
+        input.updateDisplay();
         input.write(res.join(""));
       }, 300, input, res);
 
 
     }
     else {
-      clearDisplay(input, "0");
+      clearDisplay(input);
       throw(err);
     }
 
@@ -235,7 +226,7 @@ const main = () => {
         buttons[i].addEventListener("click", () => {parser(input)});
         break;
       case 'CE':
-        buttons[i].addEventListener("click", () => {clearDisplay(input, "0")});
+        buttons[i].addEventListener("click", () => {clearDisplay(input)});
         break;
       case 'C':
         buttons[i].addEventListener("click", () => {input.del()});
